@@ -1,0 +1,46 @@
+ <!-- Include header template -->
+<% include ../partials/header %>
+
+<% include ../partials/navbar.ejs %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-3">
+            
+            <div class="list-group">
+                <a href="/communities" class="list-group-item active">Communities you belong to</a>
+                <a href="/communities/new" class="list-group-item ">Create a new community</a>
+                <a href="/invitations" class="list-group-item">Invitations</a>
+            </div>
+        </div>
+        <div class="col-xs-8">
+            <div class="container-fluid">
+                
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-9">
+            <div class="container-fluid">
+                <div class="row">
+                    <%if(communities){ %>
+                        <% communities.forEach(function(community){ %>
+                            <div class="col-xs-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <h1><%=community.title.toUpperCase()%></h1>
+                                        <p><em><%= community.beliefs %></em></p>
+                                        <p><%= community.desc %></p>
+                                        <a href="/communities/<%=community._id%>" class="btn btn-primary" role="button">Go to community</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Include footer template -->
+<% include ../partials/footer %>

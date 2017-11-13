@@ -1,0 +1,57 @@
+
+ <!-- Include header template -->
+<% include partials/header %>
+
+<% include partials/navbar.ejs %>
+<div class="jumbotron">
+    <div class="container">
+        <h1>For the community lovers</h1>
+        <h3>welcome to civy <span class="glyphicon glyphicon-heart"></span></h3>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-8 col-xs-push-2">
+            <div>
+                <h1>Registration</h1>
+                <form action="/register" method="POST">
+
+                    <div class="form-group">
+                        <label for="regFirstName">First name</label>
+                        <input type="text"  name="regUser[firstName]" class="form-control" id="regFirstName" placeholder="First name">
+                    </div>
+                    <div class="form-group">
+                        <label for="regLastName">Last name</label>
+                        <input type="text" name="regUser[lastName]" class="form-control" id="regLastName" placeholder="Last name">
+                    </div>
+                    
+                    
+                    <div class="form-group">
+                        <label for="regUsername">Username</label>
+                        <input type="text" name="regUser[username]" class="form-control" id="regUsername" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="text" name="regUser[email]" class="form-control" id="regEmail" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="regBirthDate">Birthdate</label>
+                        <input type="date" name="regUser[birthdate]" class="form-control" id="birthdate"></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" name="regUser[password]" class="form-control" id="regPassword" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <input type="radio" name="regUser[sex]" id="r1" value="M" /><label for="r1"> Masculine</label>
+                        <input type="radio" name="regUser[sex]" id="r2" value="F" /><label for="r2"> Femenine</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Include footer template -->
+<% include partials/footer %>
+

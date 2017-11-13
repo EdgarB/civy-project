@@ -1,0 +1,30 @@
+ <!-- Include header template -->
+<% include partials/header %>
+
+<% include partials/navbar.ejs %>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-3">
+            
+            <div class="list-group">
+                <a href="/communities" class="list-group-item">Communities you belong to</a>
+                <a href="/communities/new" class="list-group-item">Create a new community</a>
+                <a href="/invitations" class="list-group-item">Invitations</a>
+            </div>
+        </div>
+        <div class="col-xs-9">
+            <div class="container">
+                <h1>WELCOME BACK :)</h1>
+                <h1> <%=user.firstName %></h1>
+                
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<!-- Include footer template -->
+<% include partials/footer %>

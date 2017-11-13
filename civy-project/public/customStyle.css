@@ -1,0 +1,15 @@
+
+.form-group{
+     white-space:nowrap;
+}
+.elem-centered{
+    float: none;
+    margin: 0 auto;
+    display: block;
+}
+
+textarea{
+    max-width: 100%;
+    width: 100%;
+}
+

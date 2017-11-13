@@ -1,0 +1,95 @@
+ <!-- Include header template -->
+<% include ../partials/header %>
+
+<% include ../partials/navbar.ejs %>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation"><a href="/communities/<%=communityId%>">About <span class="glyphicon glyphicon-info-sign"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/invite">Invite people <span class="glyphicon glyphicon-user"></span> </a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/boards">Discussion boards <span class="glyphicon glyphicon-list-alt"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/notices">News <span class="glyphicon glyphicon-flag"></span></a></li>
+      <li role="presentation" class="active"><a href="#">Important questions<span class="glyphicon glyphicon-globe"></span></a></li>
+    </ul>
+</div>
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <br>
+            <div class="container">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="page-header">
+                            <h1>Create a question </h1>
+                        </div>
+                        <form action="/communities/<%=communityId%>/questions" method="POST">
+                            <div class="form-group">
+                                <label for="questionTitle">Question's title:</label>
+                                <input type="text"  name="question[title]" class="form-control" id="questionTitle" placeholder="Title for the question">
+                            </div>
+                            <div class="form-group">
+                                <label for="questionDesc">Question's description</label><br>
+                                <textarea id="newsDesc"  name="question[desc]" placeholder="Question's description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <p>Allow users to add answers to the questions?</p>
+                                <input type="radio" name="question[isOpen]" id="r1" value="false" /><label for="r1"> Do not Allow</label>
+                                <input type="radio" name="question[isOpen]" id="r2" value="true" /><label for="r2">Allow</label>
+                            </div>
+                            <div class="form-group">
+                                <p>Answers:</p>
+                                <div class="input-group">
+                                    <span class="input-group-btn" >
+                                        <button class="btn btn-default" type="button" id="btnAddAnswer" >Add answer!</button>
+                                    </span>
+                                    <input type="text" class="form-control" id="answersTyper" placeholder="Write and answer and then press enter to add it.">
+                                </div><!-- /input-group -->
+                                <br>
+                                <div id="submitedAnswers">
+                                    
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                    </div>
+                </div>   
+            </div>
+        </div>
+</div>
+<script>
+   
+        
+        var amountOfAnswers = 0;
+        $("#btnAddAnswer").on("click",function(){
+            
+            var inputText = $("#answersTyper").val();
+                
+            if(inputText.indexOf("<") === -1 && inputText.indexOf(">") === -1){
+                $("#answersTyper").val("");
+                var htmlToSend = "<div class='input-group'>";
+                htmlToSend +=        "<span class='input-group-btn'>";
+                htmlToSend +=            "<button class='btn btn-default' type='button'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span></button>";
+                htmlToSend +=        "</span>";
+                htmlToSend +=        "<input type='text' class='form-control' name='answers["+String(amountOfAnswers) + "]' value='" +inputText +"'> ";
+                htmlToSend +=    "</div>";
+                $("#submitedAnswers").append(htmlToSend);
+                amountOfAnswers++;
+            }
+            
+        });
+        $("#submitedAnswers").on("click", "div span", function(event){
+            $(this).parent().fadeOut(500, function(){
+		        $(this).remove();
+	        });
+	        event.stopPropagation();
+        });
+        
+    
+</script>
+
+
+<!-- Include footer template -->
+<% include ../partials/footer %>

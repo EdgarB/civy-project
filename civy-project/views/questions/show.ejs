@@ -1,0 +1,79 @@
+ <!-- Include header template -->
+<% include ../partials/header %>
+
+<% include ../partials/navbar.ejs %>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation"><a href="/communities/<%=communityId%>">About <span class="glyphicon glyphicon-info-sign"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/invite">Invite people <span class="glyphicon glyphicon-user"></span> </a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/boards">Discussion boards <span class="glyphicon glyphicon-list-alt"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/notices">News <span class="glyphicon glyphicon-flag"></span></a></li>
+      <li role="presentation" class="active"><a href="#">Important questions<span class="glyphicon glyphicon-globe"></span></a></li>
+    </ul>
+</div>
+
+
+<div class="container-fluid">
+    <a class="btn btn-primary btn-lg elem-centered" href="/communities/<%=communityId%>/questions/<%=question._id%>/comments/new">Create a new comment</a>
+</div>
+    
+
+<div class="container-fluid">
+    <div class="page-header">
+                            
+        <h1><%=question.title%></h1>
+        <h2><small><%=question.description%></small></h2>
+                        
+    </div>
+    <div class= container>
+        <%if(allowVote){%>
+            <form action="/communities/<%=communityId%>/questions/<%=question._id%>/answers" method="POST">
+                <div <class="form-group">
+                    <p>Answers:</p>
+                    <%question.answers.forEach(function(answer,index){%>
+                        <input type="radio" name="answerSelected" id="r<%=index%>" value="<%=index%>" /><label for="r<%=index%>"><%=answer.description%></label>
+                        <br>
+                    <% });%>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Submit vote</button>
+            </form>
+        <%}else{%>
+            
+            <table class="table">
+                <tr>
+                    <th>Answers</th>
+                </tr>
+                <%question.answers.forEach(function(answer){%>
+                    <tr>
+                        <td><span class="badge"><%=answer.votators.length %></span> <%=answer.description%></td>
+                    </tr>
+                <%});%>
+                
+            </table>
+            
+        <%}%>
+        
+    </div>
+    
+</div>
+
+<div class="container-fluid">
+    <%if(comments && comments.length > 0){ %>
+        <br>
+        <% comments.forEach(function(comment, index){ %>
+            <div class="container-fluid">
+                <p><strong><%=comment.authorName%></strong></p>
+                <p><%= comment.content %></p>
+            </div>
+            <hr>
+        <% }); %>
+    <% }else{ %>
+        <h4>There are no comments in this question</h4>
+    <%}%>
+</div>
+
+
+<!-- Include footer template -->
+<% include ../partials/footer %>

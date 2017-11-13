@@ -1,0 +1,26 @@
+ <!-- Include header template -->
+<% include partials/header %>
+
+<% include partials/navbar.ejs %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-8 col-xs-push-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Profile information</h3>
+                </div>
+                <div class="panel-body">
+                    <div><strong>Username: </strong> <%= user.username %></div>
+                    <div><strong>Full name: </strong> <%= user.firstName + " " + user.lastName %> </div>
+                    <div><strong>Email: </strong> <%= user.email %></div>
+                    <div><strong>Sex: </strong> <%= user.sex %></div>
+                    <div><strong>Birthdate: </strong> <%= user.birthdate %></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Include footer template -->
+<% include partials/footer %>
+

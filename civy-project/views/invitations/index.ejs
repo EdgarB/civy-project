@@ -1,0 +1,55 @@
+ <!-- Include header template -->
+<% include partials/header %>
+
+<% include partials/navbar.ejs %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-3">
+            
+            <div class="list-group">
+                <a href="/communities" class="list-group-item ">Communities you belong to</a>
+                <a href="/communities/new" class="list-group-item ">Create a new community</a>
+                <a href="/invitations" class="list-group-item active">Invitations</a>
+            </div>
+        </div>
+        <div class="col-xs-8">
+            <div class="container-fluid">
+                
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-9">
+            <div class="container-fluid">
+                <div class="row">
+                    <%if(invitations.length != 0){ %>
+                        <% invitations.forEach(function(invitation){ %>
+                            <div class="col-xs-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <h1><%=invitation.community.title%></h1>
+                                        <p><em><%= invitation.community.beliefs %></em></p>
+                                        <p><%= invitation.community.desc %></p>
+                                        <br>
+                                        <p>Invited by <%=invitation.senderName %></p>
+                                        <div class="row">
+                                            
+                                            <a class="btn btn-lg" href="invitations/<%=invitation.community._id%>/reject">Reject</a>
+                                            
+                                            <a class="btn-primary btn-lg" href="invitations/<%=invitation.community._id%>/accept">Acept</a>
+                                               
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Include footer template -->
+<% include partials/footer %>

@@ -1,0 +1,52 @@
+ <!-- Include header template -->
+<% include ../partials/header %>
+
+<% include ../partials/navbar.ejs %>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" ><a href="/communities/<%=communityId%>">About <span class="glyphicon glyphicon-info-sign"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/invite">Invite people <span class="glyphicon glyphicon-user"></span> </a></li>
+      <li role="presentation" class="active"><a href="#">Discussion boards <span class="glyphicon glyphicon-list-alt"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/notices">News <span class="glyphicon glyphicon-flag"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/questions">Important questions<span class="glyphicon glyphicon-globe"></span></a></li>
+    </ul>
+</div>
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <br>
+            <div class="container">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="page-header">
+                            <h1>Create a new post </h1>
+                        </div>
+                        <form action="/communities/<%=communityId%>/boards/<%=boardId%>/posts" method="POST">
+                            <div class="form-group">
+                                <label for="postTitle">Post's title:</label>
+                                <input type="text"  name="post[title]" class="form-control" id="postTitle" placeholder="Title for the post">
+                            </div>
+                            <div class="form-group">
+                                <label for="postDesc">Post's description:</label>
+                                <input type="text"  name="post[desc]" class="form-control" id="postDesc" placeholder="Description for the post">
+                            </div>
+                            <div class="form-group">
+                                <label for="postContent">Discussion board's description</label><br>
+                                <textarea id="postContent"  name="post[content]" placeholder="Content of the post (You can use html to give it structure)"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                    </div>
+                </div>   
+            </div>
+        </div>
+</div>
+
+
+
+<!-- Include footer template -->
+<% include ../partials/footer %>

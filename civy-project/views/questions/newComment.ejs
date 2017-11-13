@@ -1,0 +1,41 @@
+ <!-- Include header template -->
+<% include ../partials/header %>
+
+<% include ../partials/navbar.ejs %>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation"><a href="/communities/<%=communityId%>">About <span class="glyphicon glyphicon-info-sign"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/invite">Invite people <span class="glyphicon glyphicon-user"></span> </a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/boards">Discussion boards <span class="glyphicon glyphicon-list-alt"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/notices">News <span class="glyphicon glyphicon-flag"></span></a></li>
+      <li role="presentation" class="active"><a href="#">Important questions<span class="glyphicon glyphicon-globe"></span></a></li>
+    </ul>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <br>
+            <div class="container">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="page-header">
+                            <h1>Create a new comment </h1>
+                        </div>
+                        <form action="/communities/<%=communityId%>/questions/<%=questionId%>/comments" method="POST">
+                            <div class="form-group">
+                                <label for="commentContent">Question's comment</label><br>
+                                <textarea id="commentContent"  name="comment[content]" placeholder="Comment for the selected question goes here."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Comment</button>
+                        </form>
+                    </div>
+                </div>   
+            </div>
+        </div>
+</div>
+
+
+<!-- Include footer template -->
+<% include ../partials/footer %>

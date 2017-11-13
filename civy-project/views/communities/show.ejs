@@ -1,0 +1,43 @@
+ <!-- Include header template -->
+<% include ../partials/header %>
+
+<% include ../partials/navbar %>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#"> About <span class="glyphicon glyphicon-info-sign"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=community._id%>/invite">Invite people <span class="glyphicon glyphicon-user"></span> </a></li>
+      <li role="presentation"><a href="/communities/<%=community._id%>/boards">Discussion boards <span class="glyphicon glyphicon-list-alt"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=community._id%>/notices">News <span class="glyphicon glyphicon-flag"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=community._id%>/questions">Important questions<span class="glyphicon glyphicon-globe"></span></a></li>
+    </ul>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <br>
+            <div class="container">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="page-header">
+                            
+                            <h1><%= community.title.toUpperCase() %></h1>
+                            
+                        </div>
+                        <p><em><%= community.beliefs %></em></p>
+                        <p><%= community.desc%></p>
+                    </div>
+                </div>   
+            </div>
+            
+            
+        </div>
+        
+</div>
+
+
+
+<!-- Include footer template -->
+<% include ../partials/footer %> 

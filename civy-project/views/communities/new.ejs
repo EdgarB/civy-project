@@ -1,0 +1,48 @@
+ <!-- Include header template -->
+<% include ../partials/header %>
+
+<% include ../partials/navbar.ejs %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-md-3">
+            
+            <div class="list-group">
+                <a href="/communities" class="list-group-item">Communities you belong to</a>
+                <a href="/communities/new" class="list-group-item active">Create a new community</a>
+                <a href="/invitations" class="list-group-item">Invitations</a>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-9">
+            <div class="container-fluid">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h1>Add a new community</h1>
+                        <form action="/communities" method="POST">
+                            <div class="form-group">
+                                <label for="comTitle">Community title</label>
+                                <input type="text"  name="community[title]" class="form-control" id="comTitle" placeholder="Community name/title">
+                            </div>
+                            <div class="form-group">
+                                <label for="comBeliefs">Core beliefs</label><br>
+                                <textarea id="comBeliefs"  name="community[beliefs]" placeholder="Why does this community exist? What are the core beliefs of this community"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="comDescription">Description</label><br>
+                                <textarea id="comDescription"  name="community[desc]" placeholder="How should people use this community?"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+<!-- Include footer template -->
+<% include ../partials/footer %>

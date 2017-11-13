@@ -1,0 +1,56 @@
+ <!-- Include header template -->
+<% include ../partials/header %>
+
+<% include ../partials/navbar.ejs %>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" ><a href="/communities/<%=communityId%>">About <span class="glyphicon glyphicon-info-sign"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/invite">Invite people <span class="glyphicon glyphicon-user"></span> </a></li>
+      <li role="presentation" class="active"><a href="#">Discussion boards <span class="glyphicon glyphicon-list-alt"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/notices">News <span class="glyphicon glyphicon-flag"></span></a></li>
+      <li role="presentation"><a href="/communities/<%=communityId%>/questions">Important questions<span class="glyphicon glyphicon-globe"></span></a></li>
+    </ul>
+</div>
+
+
+<div class="container-fluid">
+    <a class="btn btn-primary btn-lg elem-centered" href="/communities/<%=communityId%>/boards/<%=board._id%>/posts/new">Create a new post</a>
+</div>
+    
+
+<div class="container-fluid">
+    <div class="page-header">
+                            
+        <h1><%=board.title%></h1>
+        <h2><small><%=board.description%></small></h2>
+                            
+    </div>
+    <div class= container>
+        
+        
+    </div>
+    
+</div>
+
+<div class="container-fluid">
+    <%if(posts && posts.length > 0){ %>
+        <br>
+        <% posts.forEach(function(post, index){ %>
+
+            <div class="container-fluid">
+                <a href="/communities/<%=communityId%>/boards/<%=board._id%>/posts/<%=post._id%>"><strong><%=post.title%></strong></a>
+                <p><em><%= post.description %></em></p>
+                <p><strong><%post.authorName%></strong></p>
+            </div>
+            <hr>
+           
+        <% }); %>
+    <% }else{ %>
+        <h4>There are no posts in this discussion board</h4>
+    <%}%>
+</div>
+
+
+<!-- Include footer template -->
+<% include ../partials/footer %>
