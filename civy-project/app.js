@@ -1252,7 +1252,7 @@ app.get("/communities/:communityId/questions/:questionId", loginRequired, functi
                     
                     var commentsToSend = [];
                     var aux;
-                    async.forEachof(commentsFound,function(comment, index, callback){
+                    async.forEachOf(commentsFound,function(comment, index, callback){
                        User.findOne({_id:comment.author}, "firstName lastName",function(error,userData){
                            var aux;
                            if(err || !userData){
