@@ -14,7 +14,8 @@ var express               = require("express"),
     Post                  = require("./models/post.js"),
     Comment               = require("./models/comment.js"),
     Notice                = require("./models/notice.js"),
-    Question              = require("./models/question.js");
+    Question              = require("./models/question.js"),
+    async                 = require('async');
 
 var app = express();
 
@@ -194,9 +195,9 @@ app.post("/communities", loginRequired, function(req,res){
              user.communities.push(savedCommunity._id);
              user.save(function(err){
                  if(err){
-                     return res.render("communities/new", {error: "Could not save association of the community to the user."});
+                     return res.redirect("/communities/new");
                  }
-                 return res.render("communities", {success: "Community created correctly."});
+                 return res.redirect("/communities");
              });
         })
        
@@ -216,23 +217,28 @@ app.get("/invitations", loginRequired, function(req, res) {
             if(err || data.length==0){
                 return res.render("invitations/index",{error:"Invitations not found", invitations: []});
             }
-            var toSend;
+
             var dataToSend = [];
-            var itemsProcessed = 0;
-            data.forEach(function(invitation, index, array){
+
+            
+            var calls =[];
+            async.forEachOf(data, function(invitation, index, callback){
+                
+                    
                 User.findOne({_id:invitation.userSenderId}, function(err, sender){
+                    
                     if(err || !sender){
                         return res.redirect("/home");
                     }
-                    
+                
                 }).then(function(sender){
-                    
+                
                     Community.findOne({_id:invitation.communityId}, function(err, communityFound) {
                         if(err || !communityFound){
                             return res.redirect("/home");
                         }
                         
-                        toSend = {
+                        var newData = {
                             senderName: String(sender.firstName + " " + sender.lastName),
                             community: {
                                 _id: String(communityFound._id), 
@@ -241,21 +247,25 @@ app.get("/invitations", loginRequired, function(req, res) {
                                 desc: String(communityFound.desc)
                             }
                         };
-                   
-                        //dataToSend.push(toSend);
-                    }).then(function (){
-                        dataToSend.push(toSend);
-                        itemsProcessed++;
-                        if(itemsProcessed == array.length){
-                            res.render("invitations/index", {invitations: dataToSend});
-                        }
+                        
+                        dataToSend.push(newData);
+                        
+                        callback();
+                        
                     });
+                    
+                    
+                
                 });
+            },function(){
+                 return res.render("invitations/index", {invitations: dataToSend});
             });
-            return;
+            
+          
         });
     });
 });
+
 
 app.get("/communities/:id/invite",loginRequired, function(req, res) {
     req.params.id = req.sanitize(req.params.id);
@@ -382,21 +392,41 @@ app.post("/communities/:id/invite",loginRequired, function(req, res) {
                     console.log("user does not exist");
                     return res. render("invitations/new", {communityId: data._id, error:"User does not exist"});
                 }
-                //SEND INVITATION TO USER!!!!
-                let invitation = new Invitation({
-                   userSenderId: userLoged._id,
-                   userReceiverId: userToInvite._id,
-                   communityId: data._id
-                });
                 
-                //Handle error?
-                invitation.save(function(err,savedInv){
-                    if(err){
-                        return res.render("invitations/new", {communityId: data._id, error: "Could not save invitation in the database."});
+                //Check if it already belongs to that community
+                User.findOne({_id: req.body.invitation.personUsername, communities:data._id},"_id",function(err,userFound){
+                    if(err || userFound){
+                        return res.redirect("/communities/"+req.params.id+"/invite");
                     }
-                    console.log("_*********************************************");
-                    return res.render("invitations/new", {communityId:data._id, success: "Invitation sended correctly."});
-                });
+                    
+                    //Check if user already has an invitation for that community
+                    Invitation.findOne({userReceiverId: userToInvite._id, communityId:data._id},"_id",function(err,invitationFound){
+                        if(err || invitationFound){
+                            return res.redirect("/communities/"+req.params.id+"/invite");
+                        }
+                        
+                         //SEND INVITATION TO USER!!!!
+                        let invitation = new Invitation({
+                           userSenderId: userLoged._id,
+                           userReceiverId: userToInvite._id,
+                           communityId: data._id
+                        });
+                        
+                        
+                        invitation.save(function(err,savedInv){
+                            if(err){
+                                return res.redirect("/communities/"+req.params.id+"/invite");
+                            }
+                            console.log("_*********************************************");
+                            return res.redirect("/communities/"+req.params.id+"/invite");
+                        });
+                        
+                        
+                    })
+                    
+                })
+                
+               
             });
         });
         
@@ -749,39 +779,35 @@ app.get("/communities/:communityId/notices",loginRequired,function(req, res){
                 }
                 
                 var tidingsToSend = [];
-                var aux;
-                tidingsFound.forEach(function(tidings, index){
+                async.forEachOf(tidingsFound,function(tidings, index,callback){
+                    
+                    
                     User.findOne({_id:tidings.author},function(err,userFound){
                         if(err){
-                            aux = {
+                            var aux = {
                                 title: String(tidings.title),
                                 description: String(tidings.description),
                                 authorName: String("anon"),
                                 datePublished: String(tidings.datePublished)
                             };
+                            tidingsToSend.push(aux);
+                            
                         }else{
-                            aux = {
+                            var aux = {
                                 title: String(tidings.title),
                                 description: String(tidings.description),
                                 authorName: String(userFound.firstName + " " + userFound.lastName),
                                 datePublished: String(tidings.datePublished)
                             };
-                        }
-                        
-                        
-                    }).then(function(){
-                        tidingsToSend.push(aux);
-
-                        
-                        if(index == tidingsFound.length - 1){
+                            tidingsToSend.push(aux);
                             
-                            
-                            return res.render("notices/index", {tidings : tidingsToSend,communityId: req.params.communityId});
                         }
+                        callback();
+                        
                     });
+                }, function(){
+                    return res.render("notices/index", {tidings : tidingsToSend,communityId: req.params.communityId});
                 });
-                
-                
             });
             
         });
@@ -1155,35 +1181,36 @@ app.get("/communities/:communityId/boards/:boardId/posts/:postId", loginRequired
                     }
                    
                    //Get all the comments of the post
-                   Comment.find({postBelongsTo:postFound._id}, function(err, commentsFound){
-                      if(err || commentsFound.length == 0){
-                          return res.render("posts/show", {communityId: communityFound._id, boardId:boardFound._id, post:postFound, comments:[]});
-                      } 
+                    Comment.find({postBelongsTo:postFound._id}, function(err, commentsFound){
+                        if(err || commentsFound.length == 0){
+                            return res.render("posts/show", {communityId: communityFound._id, boardId:boardFound._id, post:postFound, comments:[]});
+                        } 
                       
-                      var aux;
-                      var commentsToSend = [];
-                      commentsFound.forEach(function(comment, index){
-                         User.findOne({_id: comment.author},function(err, userDetails) {
-                             if(err || !userDetails){
-                                return aux = {
-                                     authorName : "anon",
-                                     content: String(comment.content)
-                                 };
-                             }
-                             return aux = {
-                                authorName : String(userDetails.firstName + " " + userDetails.lastName),
-                                content: String(comment.content)
-                             };
-                             
-                         }).then(function() {
-                             commentsToSend.push(aux);
-                            if(index == commentsFound.length - 1){
-                                console.log(commentsToSend);
-                                return res.render("posts/show", {communityId: communityFound._id,boardId: boardFound._id, post: postFound, comments:commentsToSend});
-                            }
+                        var commentsToSend = [];
+                        async.forEachOf(commentsFound, function(comment, index, callback){
                             
-                         }); 
-                      });
+                                User.findOne({_id: comment.author},function(err, userDetails) {
+                                    if(err || !userDetails){
+                                        var aux = {
+                                            authorName : "anon",
+                                            content: String(comment.content)
+                                        };
+                                        commentsToSend.push(aux);
+                                    }else{
+                                        var aux = {
+                                            authorName : String(userDetails.firstName + " " + userDetails.lastName),
+                                            content: String(comment.content)
+                                            
+                                        };
+                                        commentsToSend.push(aux);
+                                    }
+                                    
+                                    callback();
+                                });
+                        }, function(){
+                            return res.render("posts/show", {communityId: communityFound._id,boardId: boardFound._id, post: postFound, comments:commentsToSend});
+                        });
+                       
                    });
                });
             });
@@ -1225,33 +1252,32 @@ app.get("/communities/:communityId/questions/:questionId", loginRequired, functi
                     
                     var commentsToSend = [];
                     var aux;
-                    commentsFound.forEach(function(comment, index){
+                    async.forEachof(commentsFound,function(comment, index, callback){
                        User.findOne({_id:comment.author}, "firstName lastName",function(error,userData){
+                           var aux;
                            if(err || !userData){
-                              return aux = {
+                                aux = {
                                    content:String(comment.content),
                                    authorName: "anon"
                                };
+                           }else{
+                                aux ={
+                                   content: String(comment.content),
+                                   authorName: String(userData.firstName + " " + userData.lastName)
+                               };
                            }
-                           return aux ={
-                               content: String(comment.content),
-                               authorName: String(userData.firstName + " " + userData.lastName)
-                           };
-                           
-                       }).then(function(){
                            commentsToSend.push(aux);
-                           if(index == commentsFound.length - 1){
-                               //Check if the user already voted
-                               console.log(commentsToSend);
-                                Question.findOne({"answers.votators": userFound._id},"_id",function(err, questionWithVote) {
-                                    if(err || questionWithVote){
-                                       return res.render("questions/show", {question: questionFound, communityId:req.params.communityId, allowVote:false, comments:commentsToSend});
-                                    }
-                                    
-                                    return res.render("questions/show", {question: questionFound, communityId:req.params.communityId, allowVote: true, comments:commentsToSend});
-                                });
-                           }
-                       })
+                           callback();
+                       });
+                    },function(){
+                        console.log(commentsToSend);
+                            Question.findOne({"answers.votators": userFound._id},"_id",function(err, questionWithVote) {
+                                if(err || questionWithVote){
+                                   return res.render("questions/show", {question: questionFound, communityId:req.params.communityId, allowVote:false, comments:commentsToSend});
+                                }
+                                
+                                return res.render("questions/show", {question: questionFound, communityId:req.params.communityId, allowVote: true, comments:commentsToSend});
+                            });
                     });
                     
                     
@@ -1307,33 +1333,33 @@ app.get("/communities/:communityId/boards/:boardId", loginRequired, function(req
                     //console.log(posts);
                     var postsToSend = [];
                     var aux;
-                    posts.forEach(function(post, index){
+                    async.forEachOf(posts, function(post, index,callback){
                        //Search user to get username of the author
                        User.findOne({_id:post.userAuthor},function(err,userAuthor){
+                           var aux;
                            if(err || !userAuthor){
-                                return aux = {
+                                 aux = {
                                    title: post.title,
                                    description: post.description,
                                    authorName: userAuthor.firstName + " " + userAuthor.lastName
                                 };
+                           }else{
+                                aux = {
+                                    _id: String(post._id),
+                                    title: String(post.title),
+                                    description: String(post.description),
+                                    authorName: String(userAuthor.firstName + " " + userAuthor.lastName)
+                                };
                            }
-                           
-                            return aux = {
-                                _id: String(post._id),
-                                title: String(post.title),
-                                description: String(post.description),
-                                authorName: String(userAuthor.firstName + " " + userAuthor.lastName)
-                            };
-                       }).then(function(){
                            postsToSend.push(aux);
-                           if(index == postsToSend.length - 1){
-                               console.log(postsToSend);
-                               return res.render("boards/show", {
+                           callback();
+                        })
+                    },function(){
+                        console.log(postsToSend);
+                        return res.render("boards/show", {
                                    communityId:communityFound._id,
                                    board:boardFound,
                                    posts:postsToSend});
-                           }
-                       });
                     });
                });
                
